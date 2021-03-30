@@ -9,6 +9,7 @@ import {
   insertLinks,
   updateUrlResult,
 } from './db'
+import { later } from '@beenotung/tslib/async/wait'
 
 async function main() {
   let browser = await initBrowser(config.entry)
@@ -23,6 +24,7 @@ async function main() {
     for (let { id, url } of urls) {
       try {
         console.log('fetch:', url)
+        await later(config.fetchInterval)
         let { status, text, headers } = await browser.fetch(url)
         let header_id = insertHeaders(headers)
         updateUrlResult({ id, status_code: status, text, header_id })
