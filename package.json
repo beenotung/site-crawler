@@ -1,0 +1,31 @@
+{
+  "name": "site-crawler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "rimraf node_modules/@beenotung/tslib/index.d.ts",
+    "format": "prettier --write . && format-json-cli"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@beenotung/tslib": "^16.43.0",
+    "better-sqlite3": "^7.1.2",
+    "better-sqlite3-helper": "^3.1.2",
+    "dotenv": "^8.2.0",
+    "int": "^0.2.0",
+    "playwright": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^5.4.1",
+    "@types/node": "^14.14.37",
+    "format-json-cli": "^0.1.1",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^4.2.3"
+  }
+}
