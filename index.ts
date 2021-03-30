@@ -7,7 +7,6 @@ import {
   insertHeaders,
   insertImages,
   insertLinks,
-  insertUrls,
   updateUrlResult,
 } from './db'
 
@@ -15,7 +14,7 @@ async function main() {
   let browser = await initBrowser(config.entry)
   initDB(config.entry)
   let hasError = false
-  for (;;) {
+  main: for (;;) {
     let urls = await getPendingUrls()
     console.log('pending urls:', urls.length)
     if (urls.length === 0) {
@@ -23,6 +22,7 @@ async function main() {
     }
     for (let { id, url } of urls) {
       try {
+        console.log('fetch:', url)
         let { status, text, headers } = await browser.fetch(url)
         let header_id = insertHeaders(headers)
         updateUrlResult({ id, status_code: status, text, header_id })
@@ -32,16 +32,16 @@ async function main() {
       } catch (error) {
         console.error('Failed to fetch:', { url, error })
         hasError = true
-        break
+        break main
       }
     }
-    if (hasError) {
-      console.log('early terminate due to error, require manual debug')
-    } else {
-      console.log('finished crawling?')
-    }
   }
-  await browser.close()
+  if (hasError) {
+    console.log('early terminate due to error, require manual debug')
+  } else {
+    console.log('finished crawling?')
+    await browser.close()
+  }
 }
 
 catchMain(main())

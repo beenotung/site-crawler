@@ -17,7 +17,8 @@ getCols('headers').forEach(row => headerCols.add(row.name))
 export function insertHeaders(headers: object) {
   Object.keys(headers).forEach(key => {
     if (headerCols.has(key)) return
-    db.prepare(`alter table headers add column ${key} json`).run()
+    db.prepare(`alter table headers add column "${key}" json`).run()
+    headerCols.add(key)
   })
   return db.insert('headers', headers)
 }
@@ -57,15 +58,11 @@ let select_url_id = db.prepare(`select id
                                 where url = :url`)
 
 export function insertUrl(url: string, site: string): number {
-  let row = select_url_id.get(url)
+  let row = select_url_id.get({ url })
   if (row) {
     return row.id
   }
-  return db.insert('urls', { url, site: url.includes(site) })
-}
-
-export function insertUrls(urls: string[], site: string): number[] {
-  return urls.map(url => insertUrl(url, site))
+  return db.insert('urls', { url, site: Bool(url.includes(site)) })
 }
 
 export function insertImages(options: {
@@ -81,6 +78,7 @@ export function insertImages(options: {
       alt: img.alt,
     }
   })
+  if (rows.length === 0) return
   db.insert('images', rows)
 }
 
@@ -97,6 +95,7 @@ export function insertLinks(options: {
       text: link.text,
     }
   })
+  if (rows.length === 0) return
   db.insert('links', rows)
 }
 
@@ -106,6 +105,10 @@ let count_url = db.prepare(`select count(*) count
 export function initDB(entryUrl: string) {
   let count = count_url.get().count
   if (count === 0) {
-    db.insert('urls', { url: entryUrl })
+    db.insert('urls', { url: entryUrl, site: Bool(true) })
   }
+}
+
+function Bool(bool: boolean) {
+  return bool ? 1 : 0
 }
