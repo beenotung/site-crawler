@@ -46,7 +46,8 @@ let select_pending_url = db.prepare(
   `select id, url
    from urls
    where status_code is null
-     and site`,
+     and site = 1
+     and id not in (select url_id from images)`,
 )
 
 export function getPendingUrls(): { id: number; url: string }[] {
