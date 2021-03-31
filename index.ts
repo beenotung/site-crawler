@@ -16,7 +16,7 @@ async function main() {
   initDB(config.entry)
   let hasError = false
   main: for (;;) {
-    let urls = await getPendingUrls()
+    let urls = getPendingUrls()
     console.log('pending urls:', urls.length)
     if (urls.length === 0) {
       break
